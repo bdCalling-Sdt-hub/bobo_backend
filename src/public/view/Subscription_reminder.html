@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7fa;
+            padding: 20px;
+            color: #333;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            background-color: #4a154b;
+            color: white;
+            padding: 32px 24px;
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 16px;
+        }
+
+        .main-heading {
+            font-size: 28px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 8px;
+        }
+
+        .sub-heading {
+            font-size: 18px;
+            color: white;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 24px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 16px;
+            color: #4a154b;
+        }
+
+        .info-row {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .info-icon {
+            width: 24px;
+            height: 24px;
+            background: #e8eaf6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 12px;
+        }
+
+        .progress {
+            width: 90%;
+            height: 100%;
+            background-color: #4caf50;
+        }
+
+        /* .benefits-list {
+            list-style-type: none;
+        } */
+
+        .benefits-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+        }
+
+        .benefits-list li::before {
+            content: "✓";
+            color: #4caf50;
+            margin-right: 8px;
+            font-weight: bold;
+        }
+
+        .cta-button {
+            display: block;
+            width: 100%;
+            padding: 14px 20px;
+            background-color: #4a154b;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 20px;
+            transition: background-color 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #3e1240;
+        }
+
+        .footer {
+            background-color: #f4f7fa;
+            padding: 20px;
+            text-align: center;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .social-links {
+            margin-top: 12px;
+        }
+
+        .social-link {
+            display: inline-block;
+            margin: 0 8px;
+            color: #4a154b;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            .email-container {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="logo">Teachercommentshub</div>
+            <h1 class="main-heading">{{plan}} Subscription Expiring Soon</h1>
+            <p class="sub-heading">Time to renew your access!</p>
+        </div>
+
+        <div class="content">
+            <div class="card">
+                <h2 class="card-title">Subscription Details</h2>
+                <div class="info-row">
+                    <div class="info-icon">📅</div>
+                    <div>Expires in: <strong>7 days</strong></div>
+                </div>
+                <div class="info-row">
+                    <div class="info-icon">🏆</div>
+                    <div>Plan: <strong>{{current_plan}}</strong>
+                    </div>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress"></div>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="card-title">Why Renew?</h2>
+                <ul class="benefits-list">
+                    <li>Increase comment generation limit</li>
+                    <li>Extends comment generation day</li>
+                    <li>Save your time with generate comment</li>
+                    <li>Add many teacher for premium plan</li>
+                </ul>
+            </div>
+
+            <a href={{renew_link}} class="cta-button">Renew Now</a>
+        </div>
+
+        <div class="footer">
+            <p>Need help? Contact us at <a
+                    href="mailto:support@teachercommentshub.com">support@teachercommentshub.com</a></p>
+
+        </div>
+    </div>
+</body>
+
+</html>

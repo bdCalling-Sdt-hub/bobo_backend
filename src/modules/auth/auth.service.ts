@@ -371,7 +371,7 @@ const refreshToken = async (token: string) => {
 // Forgot password
 const sendEmailRegisterForm = async (email: string, firstName: string, lastName: string) => {
 
-    const otpEmailPath = path.join(
+    const EmailPath = path.join(
         __dirname,
         '../../public/view/form_link_send.html',
     );
@@ -380,8 +380,8 @@ const sendEmailRegisterForm = async (email: string, firstName: string, lastName:
         email,
         'Teacher Register form link',
         fs
-            .readFileSync(otpEmailPath, 'utf8')
-            .replace('{{link}}', (config.client_Url + '/fr/schoolAccountAuth/schoolRegister'))
+            .readFileSync(EmailPath, 'utf8')
+            .replace('{{link}}', (config.client_Url + '/schoolAccountAuth/schoolRegister'))
             .replace('{{firstName}}', firstName)
             .replace('{{lastName}}', lastName)
     );

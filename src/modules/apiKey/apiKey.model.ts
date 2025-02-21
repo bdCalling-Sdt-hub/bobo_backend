@@ -17,7 +17,6 @@ const apiKeySchema = new Schema<IApiKey>(
         }
     },
     {
-        _id: false,
         timestamps: true,
     },
 );

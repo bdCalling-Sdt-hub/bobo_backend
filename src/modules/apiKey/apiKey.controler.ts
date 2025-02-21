@@ -14,6 +14,16 @@ const getOpenAi_key = catchAsync(async (req: Request, res: Response) => {
     });
 })
 
+const createOpenAi_key = catchAsync(async (req: Request, res: Response) => {
+    const result = await apiKeyService.createOpenAi_key(req.body.key)
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'Api key create successfully',
+        data: result,
+    });
+})
+
 const updateOpenAi_key = catchAsync(async (req: Request, res: Response) => {
     const result = await apiKeyService.updateOpenAi_key(req.body.key)
 
@@ -27,5 +37,6 @@ const updateOpenAi_key = catchAsync(async (req: Request, res: Response) => {
 
 export const apiKeyControler = {
     getOpenAi_key,
-    updateOpenAi_key
+    updateOpenAi_key,
+    createOpenAi_key
 }

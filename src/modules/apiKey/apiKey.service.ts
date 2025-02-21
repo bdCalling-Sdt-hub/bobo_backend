@@ -5,6 +5,11 @@ const getOpenAi_key = async () => {
     return result;
 }
 
+const createOpenAi_key = async (key : string) => {
+    const result = await Api_key.create({ name: 'open_ai', key })
+    return result;
+}
+
 const updateOpenAi_key = async (value: string) => {
     const result = await Api_key.updateOne({ name: 'open_ai' }, { key: value })
     return result;
@@ -12,5 +17,6 @@ const updateOpenAi_key = async (value: string) => {
 
 export const apiKeyService = {
     getOpenAi_key,
-    updateOpenAi_key
+    updateOpenAi_key,
+    createOpenAi_key
 }

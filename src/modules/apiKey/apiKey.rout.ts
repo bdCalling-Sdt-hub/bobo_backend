@@ -12,7 +12,7 @@ export const apiKeyValidator = [
 ]
 router.get('/', auth(USER_ROLE.admin, USER_ROLE.sub_admin), apiKeyControler.getOpenAi_key);
 
-router.post('/', auth(USER_ROLE.admin, USER_ROLE.sub_admin), apiKeyControler.createOpenAi_key);
+// router.post('/', auth(USER_ROLE.admin, USER_ROLE.sub_admin), apiKeyControler.createOpenAi_key);
 
 router.patch('/', apiKeyValidator, req_validator(), auth(USER_ROLE.admin, USER_ROLE.sub_admin), apiKeyControler.updateOpenAi_key);
 

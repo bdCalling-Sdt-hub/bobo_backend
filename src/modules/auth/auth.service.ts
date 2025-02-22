@@ -368,8 +368,18 @@ const refreshToken = async (token: string) => {
     };
 };
 
-// Forgot password
+// sendEmailRegisterForm
 const sendEmailRegisterForm = async (email: string, firstName: string, lastName: string) => {
+
+    let isExist = await User.findOne({ email })
+
+    //check user is exist or not
+    if (isExist) {
+        throw new AppError(
+            httpStatus.FORBIDDEN,
+            'User has another account with this email',
+        );
+    }
 
     const EmailPath = path.join(
         __dirname,
@@ -378,7 +388,7 @@ const sendEmailRegisterForm = async (email: string, firstName: string, lastName:
 
     await sendEmail(
         email,
-        'Teacher Register form link',
+        'School admin Register form link',
         fs
             .readFileSync(EmailPath, 'utf8')
             .replace('{{link}}', (config.client_Url + '/schoolAccountAuth/schoolRegister'))

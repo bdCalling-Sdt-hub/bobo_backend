@@ -63,6 +63,10 @@ const userSchema: Schema<IUser> = new Schema(
         message: 'The "school_admin" field is required for role "4" (school teacher).',
       }
     },
+    accept_invitation: {
+      type: Boolean,
+      default : false
+    },
     job_role: {
       type: String
     },

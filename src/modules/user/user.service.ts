@@ -6,6 +6,12 @@ import httpStatus from 'http-status'
 import bcrypt from 'bcrypt'
 import Access_comments from "../access_comments/access_comments.model";
 
+import path from 'path';
+import fs from 'fs';
+import { sendEmail } from "../../utils/mailSender";
+import config from "../../config";
+import { createToken, verifyToken } from "../auth/auth.utils";
+
 const updateProfile = async (payload: IUser, userId: string, image: string) => {
     const { contact, name, job_role, school } = payload
 
@@ -88,34 +94,80 @@ const checkUserHasPremiumAccess = async (userId: string) => {
 //add new Teacher
 const addTeacher = async (payload: { email: string, name: string, password: string }, userId: string) => {
 
-    const isExist = await User.findOne({ email: payload?.email });
-
-    //check teacher is exist or not
-    if (isExist) {
-        throw new AppError(
-            httpStatus.FORBIDDEN,
-            'Teacher has a another account',
-        );
-    }
 
     //check school admin has a premium package
     await checkUserHasPremiumAccess(userId)
 
-    const hashedPassword = await bcrypt.hash(payload?.password, 15);
 
-    const user = await User.create({ email: payload.email, role: '4', school_admin: userId, name: payload.name, password: hashedPassword });
+    let user = await User.findOne({ email: payload?.email });
 
+    //create teacher if user is not exist
     if (!user) {
-        throw new AppError(httpStatus.BAD_REQUEST, 'Teacher creation failed');
+        const hashedPassword = await bcrypt.hash(payload?.password, 15);
+
+        user = await User.create({ email: payload.email, role: '4', school_admin: userId, name: payload.name, password: hashedPassword });
+
+        if (!user) {
+            throw new AppError(httpStatus.BAD_REQUEST, 'Teacher creation failed');
+        }
     }
+
+    const EmailPath = path.join(
+        __dirname,
+        '../../public/view/school_teacher_invitation.html',
+    );
+
+    const jwtPayload: { userId: string; role: string } = {
+        userId: user?._id?.toString() as string,
+        role: user?.role,
+    };
+
+    const token = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        60 * 60 * 24 * 7, //7 days
+    );
+
+    await sendEmail(
+        payload?.email,
+        'School Teacher account invitation',
+        fs
+            .readFileSync(EmailPath, 'utf8')
+            .replace('{{link}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
+            .replace('{{link1}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
+            .replace('{{link2}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
+            .replace('{{school}}', user?.school || 'A school')
+    );
 
     return user;
 };
 
+
+//accept school teacher invittation
+const acceptInvitation_schoolTeacher = async (token: string) => {
+    const decoded = verifyToken(token, config.jwt_access_secret as string);
+
+    const user = await User.findById(decoded?.userId);
+
+    if (!user) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'You Have not any invitation for a school teacher');
+    }
+
+    // return user if he already accepted
+    if (user?.role === '4' && user?.accept_invitation) {
+        return user;
+    }
+
+    else {
+        await User.updateOne({ _id: decoded?.userId }, { accept_invitation: true, role: "4" })
+    }
+
+}
+
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
 
-    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId }), query)
+    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId, accept_invitation : true }), query)
         .search(['name', 'email', 'contact', 'school'])
         .filter()
         .paginate()
@@ -191,7 +243,6 @@ const status_update_user = async (payload: { status: boolean }, id: string) => {
     return result
 }
 
-
 //  add a new admin
 const addSubAdmin = async (payload: IUser) => {
     const { name, email, password } = payload
@@ -218,6 +269,7 @@ const addSubAdmin = async (payload: IUser) => {
     return user;
 }
 
+
 //  get all new admin
 const allSubAdmins = async () => {
 
@@ -225,6 +277,7 @@ const allSubAdmins = async () => {
 
     return users;
 }
+
 
 //  delete sub admin
 const deleteSubAdmin = async (id: string) => {
@@ -251,6 +304,7 @@ export const userService = {
     getUserById,
     allUsers,
     addTeacher,
+    acceptInvitation_schoolTeacher,
     deleteSchool_teacher,
     mySchoolTeachers,
     status_update_user,

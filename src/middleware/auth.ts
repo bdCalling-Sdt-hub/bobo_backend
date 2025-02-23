@@ -33,6 +33,10 @@ const auth = (...userRoles: string[]) => {
             throw new AppError(httpStatus.UNAUTHORIZED, 'You are not verifiend');
         }
 
+        if (isUserExist?.role == '4' && !isUserExist?.accept_invitation) {
+            throw new AppError(httpStatus.UNAUTHORIZED, 'You have not accept invitation as a school teacher');
+        }
+
         if (isUserExist?.status == 0) {
             throw new AppError(httpStatus.FORBIDDEN, 'Your account is blocked');
         }

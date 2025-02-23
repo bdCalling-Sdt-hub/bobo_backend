@@ -13,6 +13,13 @@ import { IPackage } from '../package/package.interface';
 import { User } from '../user/user.models';
 import Access_comments from '../access_comments/access_comments.model';
 
+import path from 'path';
+import fs from 'fs';
+import { sendEmail } from '../../utils/mailSender';
+import { IUser } from '../user/user.interface';
+import moment from 'moment';
+
+
 const stripe = new Stripe(config.stripe?.stripe_api_secret as string, {
   apiVersion: "2025-01-27.acacia", // Valid API version
   typescript: true,
@@ -110,7 +117,7 @@ const confirmPayment = async (query: Record<string, any>) => {
       paymentId,
       { isPaid: true, paymentIntentId: paymentIntentId },
       { new: true, session },
-    ).populate('user');
+    ).populate('user') as unknown as { _id : string, subscription: string, tranId: string, amount: number, createdAt: Date, user: IUser };
 
     if (!payment) {
       throw new AppError(httpStatus.NOT_FOUND, 'Payment Not Found!');
@@ -197,12 +204,34 @@ const confirmPayment = async (query: Record<string, any>) => {
       );
 
 
+      // -------------send payment confirm email-------------------
+
+      const emailPath = path.join(
+        __dirname,
+        '../../public/view/confirm_payment.html',
+      );
+
+      console.log(payment?.user?.email)
+
+      await sendEmail(
+        payment?.user?.email,
+        'Payment Confirm',
+        fs
+          .readFileSync(emailPath, 'utf8')
+          .replace('{{name}}', payment?.user?.name)
+          .replace('{{tranID}}', payment?.tranId)
+          .replace('{{date}}', moment(payment?.createdAt).format('DD MMMM YYYY, hh:mm A'))
+          .replace('{{amount}}', payment?.amount.toString())
+      )
+
 
     }
 
     await session.commitTransaction();
     return payment;
+
   } catch (error: any) {
+
     await session.abortTransaction();
 
     if (paymentIntentId) {

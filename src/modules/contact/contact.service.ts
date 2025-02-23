@@ -23,9 +23,9 @@ const createContact = async (payload: Icontact) => {
       .readFileSync(emailPath, 'utf8')
       .replace('{{name}}', payload?.fullname)
       .replace('{{email}}', payload?.email)
+      .replace('{{cycle}}', payload?.cycle)
       .replace('{{details}}', payload?.description)
   );
-
 
   const contacts = await Contact.create(payload);
 

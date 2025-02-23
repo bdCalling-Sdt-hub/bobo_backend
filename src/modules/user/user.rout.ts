@@ -64,6 +64,12 @@ router.post(
     userController.addTeacher,
 );
 
+//accept invitation
+router.get(
+    '/acceptinvitation/:token',
+    userController.acceptInvitation_schoolTeacher,
+);
+
 router.put(
     '/update-school-teacher/:id',
     updateSchoolTeacherValidator,

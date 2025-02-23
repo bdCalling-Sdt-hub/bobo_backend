@@ -7,6 +7,7 @@ import sendResponse from "../../utils/sendResponse";
 import httpStatus from 'http-status'
 import { User } from "./user.models";
 import AppError from "../../error/AppError";
+import config from "../../config";
 
 //get all users
 const all_users = catchAsync(async (req: Request, res: Response) => {
@@ -59,10 +60,15 @@ const addTeacher = catchAsync(async (req: Request, res: Response) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'School Teacher created successfully',
+        message: 'School Teacher invitation send successfully',
         data: result,
     });
 });
+
+const acceptInvitation_schoolTeacher = async (req: Request, res: Response) => {
+    await userService.acceptInvitation_schoolTeacher(req.params.token);
+    res.redirect(`${config.client_Url}/auth/login`);
+}
 
 
 //update teacher
@@ -162,6 +168,7 @@ export const userController = {
     updateProfile,
     getMyProfile,
     addTeacher,
+    acceptInvitation_schoolTeacher,
     all_users,
     deleteSchoolTeacher,
     update_user_status,

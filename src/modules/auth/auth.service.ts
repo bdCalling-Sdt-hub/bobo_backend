@@ -93,10 +93,9 @@ const loginUser = async (payload: { email: string, password: string }) => {
             throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
         }
 
-        if (!user?.accept_invitation) {
+        if (user.role =='4' && !user?.accept_invitation) {
             throw new AppError(httpStatus.FORBIDDEN, 'You have not accept invitation');
         }
-
 
         // Handle verify password
         const passwordMatched = await bcrypt.compare(payload?.password, user?.password);

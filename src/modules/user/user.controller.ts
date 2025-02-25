@@ -75,6 +75,11 @@ const acceptInvitation_schoolTeacher = async (req: Request, res: Response) => {
     res.redirect(`${config.client_Url}/auth/login`);
 }
 
+const acceptSubadmin_Invitation = async (req: Request, res: Response) => {
+    await userService.acceptSubadmin_Invitation(req.params.token);
+    res.redirect(`https://dashboard.teachercommentshub.com/login`);
+}
+
 
 //update teacher
 const updateTeacherById = catchAsync(async (req: Request, res: Response) => {
@@ -182,5 +187,6 @@ export const userController = {
     updateTeacherById,
     addSubAdmin,
     deleteSubAdmin,
-    allSubAdmins
+    allSubAdmins,
+    acceptSubadmin_Invitation
 }

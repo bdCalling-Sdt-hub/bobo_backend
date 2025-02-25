@@ -65,7 +65,7 @@ const userSchema: Schema<IUser> = new Schema(
     },
     accept_invitation: {
       type: Boolean,
-      default : false
+      default: false
     },
     job_role: {
       type: String

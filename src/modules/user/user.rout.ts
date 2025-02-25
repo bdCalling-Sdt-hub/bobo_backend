@@ -80,6 +80,11 @@ router.get(
     userController.acceptInvitation_schoolTeacher,
 );
 
+router.get(
+    '/acceptadmininvitation/:token',
+    userController.acceptSubadmin_Invitation,
+);
+
 router.put(
     '/update-school-teacher/:id',
     updateSchoolTeacherValidator,

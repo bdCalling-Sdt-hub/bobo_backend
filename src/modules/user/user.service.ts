@@ -164,6 +164,26 @@ const acceptInvitation_schoolTeacher = async (token: string) => {
 
 }
 
+//accept school teacher invittation
+const acceptSubadmin_Invitation = async (token: string) => {
+    const decoded = verifyToken(token, config.jwt_access_secret as string);
+
+    const user = await User.findById(decoded?.userId);
+
+    if (!user) {
+        throw new AppError(httpStatus.BAD_REQUEST, 'You Have not any invitation for a school teacher');
+    }
+
+    // return user if he already accepted
+    if (user?.role === '6' && user?.accept_invitation) {
+        return user;
+    }
+
+    else {
+        await User.updateOne({ _id: decoded?.userId }, { accept_invitation: true })
+    }
+}
+
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
 
@@ -266,6 +286,30 @@ const addSubAdmin = async (payload: IUser) => {
         throw new AppError(httpStatus.BAD_REQUEST, 'Sub Admin creation failed');
     }
 
+    const EmailPath = path.join(
+        __dirname,
+        '../../public/view/admin_invitation.html',
+    );
+
+    const jwtPayload: { userId: string; role: string } = {
+        userId: user?._id?.toString() as string,
+        role: user?.role,
+    };
+
+    const token = createToken(
+        jwtPayload,
+        config.jwt_access_secret as string,
+        60 * 60 * 24 * 7, //7 days
+    );
+
+    await sendEmail(
+        payload?.email,
+        'Subadmin invitation email',
+        fs
+            .readFileSync(EmailPath, 'utf8')
+            .replace('{{url}}', (config.SERVER_URL + `/users/acceptadmininvitation/${token}`))
+    );
+
     return user;
 }
 
@@ -311,5 +355,6 @@ export const userService = {
     updateSchoolTeacher,
     addSubAdmin,
     deleteSubAdmin,
-    allSubAdmins
+    allSubAdmins,
+    acceptSubadmin_Invitation
 }

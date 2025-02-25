@@ -145,7 +145,7 @@ const countData = async () => {
             earnings[0]?.totalEarnings[0]?.total) ||
         0;
 
-    return { totalEarnings, totalUsers }
+    return { totalEarnings: totalEarnings.toFixed(2), totalUsers: totalUsers.toFixed(2) }
 }
 
 export const dashboardService = {

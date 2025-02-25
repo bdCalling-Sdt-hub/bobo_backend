@@ -164,6 +164,11 @@ const adminLogin = async (payload: { email: string, password: string }) => {
         // If user not found, throw error
         throw new AppError(httpStatus.NOT_FOUND, 'admin not found');
     } else {
+
+        if (user.role == '6' && !user?.accept_invitation) {
+            throw new AppError(httpStatus.FORBIDDEN, 'You have not accept sub admin invitation');
+        }
+
         if (user?.isDeleted) {
             throw new AppError(httpStatus.FORBIDDEN, 'Admin not found');
         }

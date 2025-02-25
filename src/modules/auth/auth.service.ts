@@ -13,11 +13,12 @@ import { generateOtp } from "../../utils/otpGenerator"
 import moment from "moment"
 import { sendEmail } from "../../utils/mailSender"
 import Access_comments from "../access_comments/access_comments.model"
+import { subscriptionService } from "../subscription/subscription.service"
 
 const createUser = async (payload: IUser) => {
     const { name, email, password, contact = '', job_role = "", school = '', role = "1", school_admin } = payload
 
-    let isExist = await User.findOne({ email, role: { $ne: '1' } })
+    let isExist = await User.findOne({ email })
 
     //check user is exist or not
     if (isExist) {
@@ -83,7 +84,7 @@ const createGuestUser = async (payload: { email: string }) => {
 // Login
 const loginUser = async (payload: { email: string, password: string }) => {
 
-    const user: IUser | null = await User.findOne({ email: payload?.email, role: { $ne: '5' } });
+    const user: IUser | null = await User.findOne({ email: payload?.email, role: { $nin: ['5', '6'] } });
 
     if (!user) {
         // If user not found, throw error
@@ -93,7 +94,7 @@ const loginUser = async (payload: { email: string, password: string }) => {
             throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
         }
 
-        if (user.role =='4' && !user?.accept_invitation) {
+        if (user.role == '4' && !user?.accept_invitation) {
             throw new AppError(httpStatus.FORBIDDEN, 'You have not accept invitation');
         }
 
@@ -108,8 +109,26 @@ const loginUser = async (payload: { email: string, password: string }) => {
         if (!user?.isverified) {
             throw new AppError(httpStatus.BAD_REQUEST, 'Your account is not verified');
         }
-
     }
+
+    let user_Id = user?._id.toString();
+
+    // ---------provide schoold admin id If you are a school teacher-------------
+    if (user.role == '4') {
+        const role_4_user = await User.findById(user._id)
+        if (!role_4_user?.school_admin) {
+            throw new AppError(
+                httpStatus.NOT_FOUND,
+                'School admin not found',
+            );
+        }
+        user_Id = role_4_user?.school_admin.toString();
+    }
+
+    const Subscription = await subscriptionService.myRunningSubscriptions(user_Id);
+
+    const hasSubscription = Object.keys(Subscription).length > 0 ? true : false;
+
 
     const jwtPayload: { userId: string; role: string } = {
         userId: user?._id?.toString() as string,
@@ -132,6 +151,7 @@ const loginUser = async (payload: { email: string, password: string }) => {
         user,
         accessToken,
         refreshToken,
+        subscription: hasSubscription
     };
 };
 

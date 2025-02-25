@@ -19,6 +19,7 @@ export default {
   port: process.env.PORT,
   ip: process.env.IP,
   SERVER_URL : process.env.SERVER_URL,
+  BASE_URL : process.env.BASE_URL,
   OPENAI_API_KEY : process.env.OPENAI_API_KEY,
   success_url: process.env.PAYMENT_SUCCESS_URL,
   cancel_url: process.env.PAYMENT_CANCEL_URL,

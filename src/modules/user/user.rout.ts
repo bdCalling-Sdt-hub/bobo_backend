@@ -6,12 +6,22 @@ import parseData from "../../middleware/parseData";
 import { userController } from "./user.controller";
 import { addAdminValidator, addSchoolTeacherValidator, statusUpdateValidator, updateSchoolTeacherValidator } from "./user.validator";
 import req_validator from "../../middleware/req_validation";
+import path from 'node:path';
 
 const router = Router();
-const storage = memoryStorage();
+
+export const file_upload_config = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, path.join('public', 'images'));
+    },
+    filename: function (req, file, cb) {
+        //original name helps us to get the file extension
+        cb(null, Date.now() + "-" + file.originalname);
+    },
+});
 
 const single_image_Upload = multer({
-    storage: storage,
+    storage: file_upload_config,
     limits: { fileSize: 1024 * 1024 * 3 /* 3 mb */ },
     fileFilter(req, file, cb) {
         // if file type valid

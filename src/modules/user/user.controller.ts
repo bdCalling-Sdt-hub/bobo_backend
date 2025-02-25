@@ -23,12 +23,17 @@ const all_users = catchAsync(async (req: Request, res: Response) => {
 
 const updateProfile = catchAsync(async (req: Request<{}, {}, IUser>, res: Response) => {
     let image;
-    if (req.file) {
-        image = await uploadToS3({
-            file: req.file,
-            fileName: `images/user/profile/${Math.floor(100000 + Math.random() * 900000)}`,
-        });
-    }
+
+    // if (req.file) {
+    //     image = await uploadToS3({
+    //         file: req.file,
+    //         fileName: `images/user/profile/${Math.floor(100000 + Math.random() * 900000)}`,
+    //     });
+    // }
+
+    image = req.file?.filename && (config.BASE_URL + '/images/' + req.file.filename);
+
+    console.log(image)
 
     const result = await userService.updateProfile(req.body, req.user._id, image || '')
 

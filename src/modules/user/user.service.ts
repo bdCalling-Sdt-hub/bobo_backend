@@ -41,7 +41,7 @@ const updateProfile = async (payload: IUser, userId: string, image: string) => {
 
 //get all users
 const allUsers = async (query: Record<string, any>) => {
-    const userModel = new QueryBuilder(User.find({ role: { $ne: '5' } }), query)
+    const userModel = new QueryBuilder(User.find({ role: { $nin: ['5', '6'] } }), query)
         .search(['name', 'email', 'contact', 'school'])
         .filter()
         .paginate()
@@ -167,7 +167,7 @@ const acceptInvitation_schoolTeacher = async (token: string) => {
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
 
-    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId, accept_invitation : true }), query)
+    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId, accept_invitation: true }), query)
         .search(['name', 'email', 'contact', 'school'])
         .filter()
         .paginate()

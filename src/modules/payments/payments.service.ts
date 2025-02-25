@@ -211,8 +211,6 @@ const confirmPayment = async (query: Record<string, any>) => {
         '../../public/view/confirm_payment.html',
       );
 
-      console.log(payment?.user?.email)
-
       await sendEmail(
         payment?.user?.email,
         'Payment Confirm',

@@ -8,7 +8,6 @@ import AppError from '../error/AppError';
 import config from '../config';
 import { s3Client } from '../constants/aws';
 
-
 //upload a single file
 export const uploadToS3 = async (
   // eslint-disable-next-line @typescript-eslint/no-explicit-any

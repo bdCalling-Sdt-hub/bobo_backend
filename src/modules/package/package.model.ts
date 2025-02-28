@@ -16,7 +16,7 @@ const PackageSchema = new Schema<IPackage>(
             required: true,
             min: 1,
         },
-        plan_type: { type: String, enum: ['standard', 'premium'], default: "standard" },
+        plan_type: { type: String, enum: ['standard', 'premium', 'premium_pro'], default: "standard" },
         isDeleted: { type: Boolean, default: false },
     },
     {

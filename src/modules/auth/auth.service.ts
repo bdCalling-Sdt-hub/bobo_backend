@@ -21,7 +21,7 @@ const createUser = async (payload: IUser) => {
     let isExist = await User.findOne({ email })
 
     //check user is exist or not
-    if (isExist) {
+    if (isExist && isExist?.isverified) {
         throw new AppError(
             httpStatus.FORBIDDEN,
             'User already exists with this email',
@@ -46,7 +46,7 @@ const createUser = async (payload: IUser) => {
     );
 
     return user;
-}
+};
 
 //create Guest user
 const createGuestUser = async (payload: { email: string }) => {
@@ -56,14 +56,14 @@ const createGuestUser = async (payload: { email: string }) => {
     const isExist = await User.findOne({ email });
 
     //check user is exist or not
-    if (isExist) {
+    if (isExist && isExist?.isverified) {
         throw new AppError(
             httpStatus.FORBIDDEN,
             'User already exists',
         );
     }
 
-    const user = await User.create({ email, role: '1' });
+    const user = await User.findOneAndUpdate({ email }, { email }, { upsert: true });
 
     await Access_comments.findOneAndUpdate(
         { user: user?._id },
@@ -127,7 +127,7 @@ const loginUser = async (payload: { email: string, password: string }) => {
 
     const Subscription = await subscriptionService.myRunningSubscriptions(user_Id);
 
-    const hasSubscription = Object.keys(Subscription).length > 0 ? true : false;
+    const hasSubscription = Subscription.length > 0 ? true : false;
 
 
     const jwtPayload: { userId: string; role: string } = {

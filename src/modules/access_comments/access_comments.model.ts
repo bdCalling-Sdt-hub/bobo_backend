@@ -41,6 +41,14 @@ const Access_commentsSchema = new Schema<IAccess_comments>(
                     expiredAt: new Date(),
                 })
             },
+            premium_pro: {
+                type: PlanSchema, default: () => ({
+                    comment_generate_limit: 0,
+                    comment_generated: 0,
+                    accessCycle: 'all',
+                    expiredAt: new Date(),
+                })
+            },
             free: {
                 type: PlanSchema, default: () => {
                     return {
@@ -53,6 +61,14 @@ const Access_commentsSchema = new Schema<IAccess_comments>(
             },
 
         },
+        member_limit: {
+            type: Number,
+            default: 0
+        },
+        added_member: {
+            type: Number,
+            default: 0
+        }
     },
     {
         timestamps: true,

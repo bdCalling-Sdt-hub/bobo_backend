@@ -10,5 +10,5 @@ export const addPackageValidator = [
 ]
 
 export const getPackageValidator = [
-    query('type').optional().trim().escape().isString().isIn(['standard', 'premium']).withMessage("filter type is invalid"),
+    query('type').optional().trim().escape().isString().isIn(['standard', 'premium', "premium_pro"]).withMessage("filter type is invalid"),
 ]

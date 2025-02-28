@@ -21,7 +21,7 @@ const update_Package = async (payload: IPackage, id: string) => {
 }
 
 // get all packeges and filter by plan type
-const getPackages_by_type = async (packageType?: 'standard' | "premium") => {
+const getPackages_by_type = async (packageType?: 'standard' | "premium" | "premium_pro") => {
     const query = packageType ? { plan_type: packageType, isDeleted: false } : { isDeleted: false };
     const packages = await Package.find(query);
     return packages;

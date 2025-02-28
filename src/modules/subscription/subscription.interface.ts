@@ -5,6 +5,7 @@ export interface ISubscriptions {
   user: ObjectId;
   package: ObjectId | IPackage;
   isPaid: boolean;
+  added_members : number;
   amount: number;
   startedAt : Date;
   expiredAt: Date;

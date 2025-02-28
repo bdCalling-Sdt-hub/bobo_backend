@@ -146,16 +146,16 @@ const checkAccess = async (
         }
     }
 
-    if (role == '4') {
-        if ((userAccess.plans.premium?.comment_generate_limit || 0) <= 0) {
+    if (role == '4' || role == '3') {
+        if ((userAccess.plans.premium_pro?.comment_generate_limit || 0) <= 0) {
             throw new AppError(
                 httpStatus.FORBIDDEN,
                 `You have not any subscription`,
             );
         }
-        if (userAccess.plans.premium?.expiredAt && (new Date(userAccess.plans.premium?.expiredAt) > new Date())) {
-            if (userAccess.plans.premium?.comment_generate_limit > userAccess.plans.premium?.comment_generated) {
-                usedPlan = 'premium'
+        if (userAccess.plans.premium_pro?.expiredAt && (new Date(userAccess.plans.premium_pro?.expiredAt) > new Date())) {
+            if (userAccess.plans.premium_pro?.comment_generate_limit > userAccess.plans.premium_pro?.comment_generated) {
+                usedPlan = 'premium_pro'
                 return { usedPlan, accessCycle: 'all' }
             } else {
                 throw new AppError(
@@ -170,7 +170,6 @@ const checkAccess = async (
             );
         }
     }
-
 
     // check user initially purchase a subscription for handle message
     let msg = ''
@@ -225,7 +224,6 @@ const checkAccess = async (
             return { usedPlan, accessCycle: cycle }
         }
     }
-
 
     // check user initially purchase a subscription
     if ((userAccess.plans.premium?.comment_generate_limit || 0) <= 0) {
@@ -309,10 +307,11 @@ const sendReminderEmail = async () => {
         const users = await Access_comments.find({
             $or: [
                 { "plans.standard.expiredAt": { $gte: targetDate, $lt: nextDay } },
-                { "plans.premium.expiredAt": { $gte: targetDate, $lt: nextDay } }
+                { "plans.premium.expiredAt": { $gte: targetDate, $lt: nextDay } },
+                { "plans.premium_pro.expiredAt": { $gte: targetDate, $lt: nextDay } }
             ]
         }).populate("user").lean() as unknown as {
-            plans: { standard: { expiredAt: string }, premium: { expiredAt: string } },
+            plans: { standard: { expiredAt: string }, premium: { expiredAt: string }, premium_pro: { expiredAt: string } },
             user: { email: string, name: string, role: number }
         }[];
 
@@ -326,12 +325,12 @@ const sendReminderEmail = async () => {
 
             if (!user.user || !user.user.email) continue; // Skip if user is missing
 
-            let plan;
+            let plan = "Standard";
 
             if (new Date(user?.plans?.premium?.expiredAt) >= targetDate && new Date(user?.plans?.premium?.expiredAt) <= nextDay) {
                 plan = "Premium";
-            } else {
-                plan = "Standard";
+            } else if (new Date(user?.plans?.premium_pro?.expiredAt) >= targetDate && new Date(user?.plans?.premium_pro?.expiredAt) <= nextDay){
+                plan = "Premium Pro";
             }
 
             await sendEmail(

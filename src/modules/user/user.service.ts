@@ -11,6 +11,7 @@ import fs from 'fs';
 import { sendEmail } from "../../utils/mailSender";
 import config from "../../config";
 import { createToken, verifyToken } from "../auth/auth.utils";
+import generateRandomString from "../../utils/generateRandomString";
 
 const updateProfile = async (payload: IUser, userId: string, image: string) => {
     const { contact, name, job_role, school } = payload
@@ -62,7 +63,7 @@ const getUserById = async (id: string) => {
 
 
 //check user has a premium access for teacher addition
-const checkUserHasPremiumAccess = async (userId: string) => {
+const checkSchoolAdminHasPremiumProAccess = async (userId: string) => {
     const userAccess = await Access_comments.findOne({ user: userId });
 
     if (!userAccess) {
@@ -72,19 +73,19 @@ const checkUserHasPremiumAccess = async (userId: string) => {
         );
     }
 
-    if (userAccess.plans.premium?.expiredAt && (new Date(userAccess.plans.premium?.expiredAt) > new Date())) {
-        if (userAccess.plans.premium?.comment_generate_limit > userAccess.plans.premium?.comment_generated) {
+    if (userAccess.plans.premium_pro?.expiredAt && (new Date(userAccess.plans.premium_pro?.expiredAt) > new Date())) {
+        if (userAccess.plans.premium_pro?.comment_generate_limit > userAccess.plans.premium_pro?.comment_generated) {
             return
         } else {
             throw new AppError(
                 httpStatus.FORBIDDEN,
-                'Your premium subscription expired !',
+                'Your premium subscription expired !dd',
             );
         }
     } else {
         throw new AppError(
             httpStatus.FORBIDDEN,
-            'Your premium subscription expired !',
+            'Your premium subscription expired !ds',
         );
     }
 
@@ -94,16 +95,20 @@ const checkUserHasPremiumAccess = async (userId: string) => {
 //add new Teacher
 const addTeacher = async (payload: { email: string, name: string, password: string }, userId: string) => {
 
-
     //check school admin has a premium package
-    await checkUserHasPremiumAccess(userId)
+    await checkSchoolAdminHasPremiumProAccess(userId)
 
 
     let user = await User.findOne({ email: payload?.email });
 
+    const randomPassword = generateRandomString(8);
+
+    let tmp_password;
+
     //create teacher if user is not exist
     if (!user) {
-        const hashedPassword = await bcrypt.hash(payload?.password, 15);
+        tmp_password = randomPassword;
+        const hashedPassword = await bcrypt.hash(randomPassword, 15);
 
         user = await User.create({ email: payload.email, role: '4', school_admin: userId, name: payload.name, password: hashedPassword });
 
@@ -136,7 +141,8 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
             .replace('{{link}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
             .replace('{{link1}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
             .replace('{{link2}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
-            .replace('{{school}}', user?.school || 'A school')
+            .replace('{{school}}', user?.school ?? 'A school')
+            .replace('{{tmp_password}}', tmp_password ? `Your temporary password : ${tmp_password}` : '')
     );
 
     return user;
@@ -159,7 +165,7 @@ const acceptInvitation_schoolTeacher = async (token: string) => {
     }
 
     else {
-        await User.updateOne({ _id: decoded?.userId }, { accept_invitation: true, role: "4" })
+        await User.updateOne({ _id: decoded?.userId }, { accept_invitation: true, role: "4", isverified: true })
     }
 
 }

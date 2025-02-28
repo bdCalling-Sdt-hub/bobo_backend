@@ -5,7 +5,7 @@ export interface IPackage {
     shortTitle: string;
     shortDescription: string;
     comment_limit: number,
-    plan_type: "standard" | "premium",
+    plan_type: "standard" | "premium" | 'premium_pro',
     duration: number
     price: number;
     isDeleted: boolean

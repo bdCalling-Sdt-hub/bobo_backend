@@ -7,7 +7,7 @@ import Package from '../package/package.model';
 import Access_comments from '../access_comments/access_comments.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 
-const createSubscription = async (payload: { package: string }, userId: string) => {
+const createSubscription = async (payload: { package: string, member : number }, userId: string) => {
   // Check if a similar subscription exists
   const isExist = await Subscription.findOne({
     user: userId,
@@ -66,10 +66,21 @@ const createSubscription = async (payload: { package: string }, userId: string) 
         Date.now() + packages.duration * 24 * 60 * 60 * 1000
       );
     }
+  }else if (packages.plan_type == 'premium_pro') {
+    if (exist_access_comments?.plans.premium_pro?.expiredAt) {
+      new_expired = new Date(
+        exist_access_comments.plans.premium_pro.expiredAt.getTime() + packages.duration * 24 * 60 * 60 * 1000
+      )
+      new_started = exist_access_comments.plans.premium_pro.expiredAt
+    } else {
+      new_expired = new Date(
+        Date.now() + packages.duration * 24 * 60 * 60 * 1000
+      );
+    }
   }
 
   // Create the subscription
-  const result = await Subscription.create({ amount: packages?.price, user: userId, startedAt: new_expired, expiredAt: new_expired, package: packages._id });
+  const result = await Subscription.create({ amount: packages?.price, user: userId, startedAt: new_expired, expiredAt: new_expired, package: packages._id, added_members : payload.member });
   // console.log('result:', result);
 
   if (!result) {
@@ -78,6 +89,7 @@ const createSubscription = async (payload: { package: string }, userId: string) 
 
   return result;
 };
+
 
 const getAllSubscription = async (query: Record<string, any>) => {
   const subscriptionsModel = new QueryBuilder(
@@ -122,12 +134,16 @@ const myRunningSubscriptions = async (userId: string) => {
       }
     }
 
+    if (result.plans.premium_pro?.expiredAt && (new Date(result.plans.premium_pro?.expiredAt) > new Date())) {
+      if (result.plans.premium_pro?.comment_generate_limit > result.plans.premium_pro?.comment_generated) {
+        response.push({ ...result.plans.premium_pro, plan: 'premium_pro' })
+      }
+    }
+
   }
 
   return response
 }
-
-
 
 
 const getSubscriptionById = async (userId: string) => {

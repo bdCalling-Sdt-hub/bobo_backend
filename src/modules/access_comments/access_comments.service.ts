@@ -350,7 +350,7 @@ const sendReminderEmail = async () => {
 
 }
 
-//send remionder email
+//send subscription remionder email
 cron.schedule('0 0 * * *', sendReminderEmail);
 
 

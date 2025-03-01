@@ -75,17 +75,27 @@ const checkSchoolAdminHasPremiumProAccess = async (userId: string) => {
 
     if (userAccess.plans.premium_pro?.expiredAt && (new Date(userAccess.plans.premium_pro?.expiredAt) > new Date())) {
         if (userAccess.plans.premium_pro?.comment_generate_limit > userAccess.plans.premium_pro?.comment_generated) {
-            return
+
+            // ----------check school teacher has a limit for teacher add ---------------
+            if (userAccess?.member_limit <= userAccess?.added_member) {
+                throw new AppError(
+                    httpStatus.FORBIDDEN,
+                    "You've reached your invite limit. Please purchase a new package to send more invites",
+                );
+            } else {
+                return;
+            }
+
         } else {
             throw new AppError(
                 httpStatus.FORBIDDEN,
-                'Your premium subscription expired !dd',
+                'Your premium subscription expired !',
             );
         }
     } else {
         throw new AppError(
             httpStatus.FORBIDDEN,
-            'Your premium subscription expired !ds',
+            'Your premium subscription expired !',
         );
     }
 
@@ -115,6 +125,10 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
         if (!user) {
             throw new AppError(httpStatus.BAD_REQUEST, 'Teacher creation failed');
         }
+
+        // ----------increment add teacher-------------
+        // await Access_comments.updateOne({ user: userId }, { $inc: { added_member: 1 } });
+
     }
 
     const EmailPath = path.join(
@@ -144,6 +158,14 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
             .replace('{{school}}', user?.school ?? 'A school')
             .replace('{{tmp_password}}', tmp_password ? `Your temporary password : ${tmp_password}` : '')
     );
+
+    // if (user && user.role !== '4') {
+    //     // ----------increment add teacher-------------
+    //     await Access_comments.updateOne({ user: userId }, { $inc: { added_member: 1 } });
+    // }
+
+    // ----------increment add teacher-------------
+    await Access_comments.updateOne({ user: userId }, { $inc: { added_member: 1 } });
 
     return user;
 };
@@ -193,7 +215,7 @@ const acceptSubadmin_Invitation = async (token: string) => {
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
 
-    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId, accept_invitation: true }), query)
+    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId }), query) //accept_invitation: true
         .search(['name', 'email', 'contact', 'school'])
         .filter()
         .paginate()
@@ -227,8 +249,10 @@ const deleteSchool_teacher = async (id: string, userId: string) => {
 
     const deleted = await User.deleteOne({ _id: id })
 
-    return deleted
+    // ----------increment add teacher-------------
+    await Access_comments.updateOne({ user: userId }, { $inc: { added_member: -1 } });
 
+    return deleted
 }
 
 //adTeacher

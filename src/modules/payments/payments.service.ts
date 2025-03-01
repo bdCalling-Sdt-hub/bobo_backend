@@ -162,7 +162,7 @@ const confirmPayment = async (query: Record<string, any>) => {
       let plan: "standard" | "premium" | "premium_pro" = "standard";
       let accessCycle: string = "all";
 
-      
+
 
 
       if (packageDetails?.plan_type === "premium") {
@@ -177,26 +177,32 @@ const confirmPayment = async (query: Record<string, any>) => {
       let comment_generated = prevAccess_comment?.plans?.[plan]?.comment_generated || 0;
       let comment_generat_limit = (prevAccess_comment?.plans?.[plan]?.comment_generate_limit || 0) + packageDetails.comment_limit;
 
-      // let memberLimit = 0
-      // let addedMember = prevAccess_comment?.plans?.[plan]?.m
+      let memberLimit = (prevAccess_comment?.member_limit || 0) + subscription?.added_members
+      let addedMember = prevAccess_comment?.added_member || 0
 
 
       const planData = prevAccess_comment?.plans?.[plan];
+      const premiumPlanData = prevAccess_comment?.plans?.premium_pro;
 
       if (planData?.expiredAt && new Date(planData.expiredAt) <= new Date()) {
         comment_generated = 0;
         comment_generat_limit = packageDetails.comment_limit || 0;
+      }
 
-        // memberLimit = subscription?.added_members,
-        // addedMember = 0
+      
+      if (premiumPlanData?.expiredAt && new Date(premiumPlanData.expiredAt) <= new Date()) {
+        memberLimit = subscription?.added_members
+        addedMember = 0
       }
 
       await Access_comments.findOneAndUpdate(
         { user: user?._id },
         {
-          $set: { [`plans.${plan}.accessCycle`]: accessCycle, [`plans.${plan}.expiredAt`]: subscription?.expiredAt, [`plans.${plan}.comment_generated`]: comment_generated, [`plans.${plan}.comment_generate_limit`]: comment_generat_limit,
-        
-        },
+          $set: {
+            [`plans.${plan}.accessCycle`]: accessCycle, [`plans.${plan}.expiredAt`]: subscription?.expiredAt, [`plans.${plan}.comment_generated`]: comment_generated, [`plans.${plan}.comment_generate_limit`]: comment_generat_limit,
+            member_limit: memberLimit,
+            added_member: addedMember
+          },
         },
         { upsert: true, session },
       );

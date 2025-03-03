@@ -88,10 +88,10 @@ const loginUser = async (payload: { email: string, password: string }) => {
 
     if (!user) {
         // If user not found, throw error
-        throw new AppError(httpStatus.NOT_FOUND, 'User not found');
+        throw new AppError(httpStatus.NOT_FOUND, 'Account not found');
     } else {
         if (!user?.status) {
-            throw new AppError(httpStatus.FORBIDDEN, 'This user is blocked');
+            throw new AppError(httpStatus.FORBIDDEN, 'Your account is blocked');
         }
 
         if (user.role == '4' && !user?.accept_invitation) {
@@ -102,7 +102,7 @@ const loginUser = async (payload: { email: string, password: string }) => {
         const passwordMatched = await bcrypt.compare(payload?.password, user?.password);
 
         if (!passwordMatched) {
-            throw new AppError(httpStatus.BAD_REQUEST, 'Password does not match');
+            throw new AppError(httpStatus.BAD_REQUEST, 'Please check your credentials and try again');
         }
 
 
@@ -178,7 +178,7 @@ const adminLogin = async (payload: { email: string, password: string }) => {
         const passwordMatched = await bcrypt.compare(payload?.password, user?.password);
 
         if (!passwordMatched) {
-            throw new AppError(httpStatus.BAD_REQUEST, 'Password does not match');
+            throw new AppError(httpStatus.BAD_REQUEST, 'Please check your credentials and try again');
         }
 
 

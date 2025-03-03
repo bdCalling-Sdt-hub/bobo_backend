@@ -135,13 +135,13 @@ const checkAccess = async (
             else {
                 throw new AppError(
                     httpStatus.FORBIDDEN,
-                    'Your free limit is expired!',
+                    'Your free limit has expired!',
                 );
             }
         } else {
             throw new AppError(
                 httpStatus.FORBIDDEN,
-                'Your free limit is expired!',
+                'Your free limit has expired!',
             );
         }
     }
@@ -150,7 +150,7 @@ const checkAccess = async (
         if ((userAccess.plans.premium_pro?.comment_generate_limit || 0) <= 0) {
             throw new AppError(
                 httpStatus.FORBIDDEN,
-                `You have not any subscription`,
+                `You don’t have an active subscription`,
             );
         }
         if (userAccess.plans.premium_pro?.expiredAt && (new Date(userAccess.plans.premium_pro?.expiredAt) > new Date())) {
@@ -160,13 +160,13 @@ const checkAccess = async (
             } else {
                 throw new AppError(
                     httpStatus.FORBIDDEN,
-                    'Your School comment generate limit expired !',
+                    role == '4' ? "Contact your school administrator to renew the plan" : 'Your School comment generate limit expired !',
                 );
             }
         } else {
             throw new AppError(
                 httpStatus.FORBIDDEN,
-                'Your School subscription expired !',
+                role == '4' ? "Contact your school administrator to renew the plan" : 'Your School subscription expired !',
             );
         }
     }
@@ -175,7 +175,7 @@ const checkAccess = async (
     let msg = ''
 
     if ((userAccess.plans.standard?.comment_generate_limit || 0) <= 0) {
-        msg = `You have not any subscription`;
+        msg = `You don’t have an active subscription`;
     } else {
         msg = ''
     }
@@ -188,7 +188,7 @@ const checkAccess = async (
 
                     // check user initially purchase a subscription for handle message
                     if ((userAccess.plans.premium?.comment_generate_limit || 0) <= 0) {
-                        msg = `You have not any subscription`;
+                        msg = `You don’t have an active subscription`;
                     }
 
                     // check user have a premium plan with expire date and comment generate limit
@@ -229,7 +229,7 @@ const checkAccess = async (
     if ((userAccess.plans.premium?.comment_generate_limit || 0) <= 0) {
         throw new AppError(
             httpStatus.FORBIDDEN,
-            `You have not any subscription`,
+            `You don’t have an active subscription`,
         );
     }
     // check user have a premium plan with expire date and comment generate limit
@@ -329,7 +329,7 @@ const sendReminderEmail = async () => {
 
             if (new Date(user?.plans?.premium?.expiredAt) >= targetDate && new Date(user?.plans?.premium?.expiredAt) <= nextDay) {
                 plan = "Premium";
-            } else if (new Date(user?.plans?.premium_pro?.expiredAt) >= targetDate && new Date(user?.plans?.premium_pro?.expiredAt) <= nextDay){
+            } else if (new Date(user?.plans?.premium_pro?.expiredAt) >= targetDate && new Date(user?.plans?.premium_pro?.expiredAt) <= nextDay) {
                 plan = "Premium Pro";
             }
 

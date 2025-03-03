@@ -8,15 +8,13 @@ import httpStatus from 'http-status'
 
 const createSubscription = catchAsync(async (req, res: Response) => {
 
-  const isNumeric = (value : any) => !isNaN(parseFloat(value)) && isFinite(value);
-
-  if (req.user.role == "3" && !req.body.member && !isNumeric(req.body.member)) {
+  if (req.user.role == "3" && !req.body.member) {
     throw new AppError(
       httpStatus.BAD_REQUEST,
       'Teacher member is required',
     );
   }
-
+  
   const result = await subscriptionService.createSubscription(req.body, req?.user._id);
   sendResponse(res, {
     statusCode: 200,

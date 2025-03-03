@@ -7,7 +7,16 @@ import Package from '../package/package.model';
 import Access_comments from '../access_comments/access_comments.model';
 import QueryBuilder from '../../builder/QueryBuilder';
 
-const createSubscription = async (payload: { package: string, member : number }, userId: string) => {
+const createSubscription = async (payload: { package: string, member: number }, userId: string) => {
+
+  // Find the package details
+  const packages = await Package.findOne({ _id: payload.package });
+
+  if (!packages) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Package not found');
+  }
+
+
   // Check if a similar subscription exists
   const isExist = await Subscription.findOne({
     user: userId,
@@ -16,19 +25,14 @@ const createSubscription = async (payload: { package: string, member : number },
   });
 
   if (isExist) {
-    return isExist;
+    const updatedSubs = await Subscription.findOneAndUpdate({ _id: isExist?._id }, { amount: packages.price * Number(payload?.member), user: userId, startedAt: Date.now(), expiredAt: Date.now() + packages.duration * 24 * 60 * 60 * 1000, added_members: payload.member }, { new: true });
+    
+    return updatedSubs;
   }
 
   let newPayload = {
     package: payload.package,
     expiredAt: new Date(),
-  }
-
-  // Find the package details
-  const packages = await Package.findOne({ _id: payload.package });
-
-  if (!packages) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Package not found');
   }
 
 
@@ -66,7 +70,7 @@ const createSubscription = async (payload: { package: string, member : number },
         Date.now() + packages.duration * 24 * 60 * 60 * 1000
       );
     }
-  }else if (packages.plan_type == 'premium_pro') {
+  } else if (packages.plan_type == 'premium_pro') {
     if (exist_access_comments?.plans.premium_pro?.expiredAt) {
       new_expired = new Date(
         exist_access_comments.plans.premium_pro.expiredAt.getTime() + packages.duration * 24 * 60 * 60 * 1000
@@ -80,7 +84,7 @@ const createSubscription = async (payload: { package: string, member : number },
   }
 
   // Create the subscription
-  const result = await Subscription.create({ amount: packages?.price, user: userId, startedAt: new_expired, expiredAt: new_expired, package: packages._id, added_members : payload.member });
+  const result = await Subscription.create({ amount: packages?.price * payload?.member, user: userId, startedAt: new_expired, expiredAt: new_expired, package: packages._id, added_members: Number(payload?.member) });
   // console.log('result:', result);
 
   if (!result) {

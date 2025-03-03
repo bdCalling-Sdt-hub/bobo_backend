@@ -156,7 +156,7 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
             .replace('{{link1}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
             .replace('{{link2}}', (config.SERVER_URL + `/users/acceptinvitation/${token}`))
             .replace('{{school}}', user?.school ?? 'A school')
-            .replace('{{tmp_password}}', tmp_password ? `Your temporary password : ${tmp_password}` : '')
+            .replace('{{tmp_password}}', tmp_password ? `Your temporary password : ${tmp_password}` : 'You can login your previous account password')
     );
 
     // if (user && user.role !== '4') {
@@ -214,7 +214,6 @@ const acceptSubadmin_Invitation = async (token: string) => {
 
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
-
     const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId }), query) //accept_invitation: true
         .search(['name', 'email', 'contact', 'school'])
         .filter()
@@ -222,9 +221,15 @@ const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
         .sort();
     const data: any = await userModel.modelQuery;
     const meta = await userModel.countTotal();
+
+    const invitedUserCount = await User.countDocuments({ role: "4", school_admin: userId })
+    const addLimit = await Access_comments.findOne({ user: userId });
+
     return {
         data,
         meta,
+        addLimit: addLimit?.member_limit,
+        invitedUserCount
     };
     // return await User.find({ $or: [ { name: /sss/i } ] })
 }

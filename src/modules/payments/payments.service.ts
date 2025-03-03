@@ -163,8 +163,6 @@ const confirmPayment = async (query: Record<string, any>) => {
       let accessCycle: string = "all";
 
 
-
-
       if (packageDetails?.plan_type === "premium") {
         plan = "premium";
       }
@@ -189,7 +187,7 @@ const confirmPayment = async (query: Record<string, any>) => {
         comment_generat_limit = packageDetails.comment_limit || 0;
       }
 
-      
+
       if (premiumPlanData?.expiredAt && new Date(premiumPlanData.expiredAt) <= new Date()) {
         memberLimit = subscription?.added_members
         addedMember = 0

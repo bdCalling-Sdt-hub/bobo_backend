@@ -9,6 +9,7 @@ const SubscriptionsSchema = new Schema<ISubscriptions>(
     isPaid: { type: Boolean, default: false },
     amount: { type: Number, required: true, min: 0 },
     added_members: { type: Number, required: true, default: 0 },
+    comment_limit: { type: Number, required: true, default: 0 },
     startedAt: { type: Date, default: null },
     expiredAt: { type: Date, default: null },
     isExpired: { type: Boolean, default: false },

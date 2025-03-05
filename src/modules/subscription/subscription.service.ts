@@ -25,8 +25,8 @@ const createSubscription = async (payload: { package: string, member: number }, 
   });
 
   if (isExist) {
-    const updatedSubs = await Subscription.findOneAndUpdate({ _id: isExist?._id }, { amount: packages.price * Number(payload?.member), user: userId, startedAt: Date.now(), expiredAt: Date.now() + packages.duration * 24 * 60 * 60 * 1000, added_members: payload.member }, { new: true });
-    
+    const updatedSubs = await Subscription.findOneAndUpdate({ _id: isExist?._id }, { amount: packages.price * Number(payload?.member), user: userId, startedAt: Date.now(), expiredAt: Date.now() + packages.duration * 24 * 60 * 60 * 1000, added_members: payload.member, comment_limit: packages?.comment_limit * Number(payload?.member) }, { new: true });
+
     return updatedSubs;
   }
 

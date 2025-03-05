@@ -173,7 +173,7 @@ const confirmPayment = async (query: Record<string, any>) => {
       }
 
       let comment_generated = prevAccess_comment?.plans?.[plan]?.comment_generated || 0;
-      let comment_generat_limit = (prevAccess_comment?.plans?.[plan]?.comment_generate_limit || 0) + packageDetails.comment_limit;
+      let comment_generat_limit = (prevAccess_comment?.plans?.[plan]?.comment_generate_limit || 0) + subscription.comment_limit;
 
       let memberLimit = (prevAccess_comment?.member_limit || 0) + subscription?.added_members
       let addedMember = prevAccess_comment?.added_member || 0
@@ -184,7 +184,7 @@ const confirmPayment = async (query: Record<string, any>) => {
 
       if (planData?.expiredAt && new Date(planData.expiredAt) <= new Date()) {
         comment_generated = 0;
-        comment_generat_limit = packageDetails.comment_limit || 0;
+        comment_generat_limit = subscription.comment_limit || 0;
       }
 
 

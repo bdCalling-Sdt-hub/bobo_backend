@@ -6,6 +6,7 @@ export interface ISubscriptions {
   package: ObjectId | IPackage;
   isPaid: boolean;
   added_members : number;
+  comment_limit : number
   amount: number;
   startedAt : Date;
   expiredAt: Date;

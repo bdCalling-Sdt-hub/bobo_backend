@@ -73,25 +73,26 @@ const checkSchoolAdminHasPremiumProAccess = async (userId: string) => {
         );
     }
 
+    //check user created subscription or not
+    if (userAccess.plans.premium_pro?.comment_generate_limit == 0) {
+        throw new AppError(
+            httpStatus.FORBIDDEN,
+            "You don’t have an active subscription",
+        );
+    }
+
     if (userAccess.plans.premium_pro?.expiredAt && (new Date(userAccess.plans.premium_pro?.expiredAt) > new Date())) {
-        if (userAccess.plans.premium_pro?.comment_generate_limit > userAccess.plans.premium_pro?.comment_generated) {
 
-            // ----------check school teacher has a limit for teacher add ---------------
-            if (userAccess?.member_limit <= userAccess?.added_member) {
-                throw new AppError(
-                    httpStatus.FORBIDDEN,
-                    "You've reached your invite limit. Please purchase a new package to send more invites",
-                );
-            } else {
-                return;
-            }
-
-        } else {
+        // ----------check school teacher has a limit for teacher add ---------------
+        if (userAccess?.member_limit <= userAccess?.added_member) {
             throw new AppError(
                 httpStatus.FORBIDDEN,
-                'Your premium subscription expired !',
+                "You've reached your invite limit. Please purchase a new package to send more invites",
             );
         }
+
+        return;
+
     } else {
         throw new AppError(
             httpStatus.FORBIDDEN,

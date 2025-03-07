@@ -14,7 +14,11 @@ const createSubscription = catchAsync(async (req, res: Response) => {
       'Teacher member is required',
     );
   }
-  
+
+  if (req.user.role != "3") {
+    req.body.member = 1;
+  }
+
   const result = await subscriptionService.createSubscription(req.body, req?.user._id);
   sendResponse(res, {
     statusCode: 200,

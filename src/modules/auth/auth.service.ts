@@ -16,9 +16,9 @@ import Access_comments from "../access_comments/access_comments.model"
 import { subscriptionService } from "../subscription/subscription.service"
 
 const createUser = async (payload: IUser) => {
-    const { name, email, password, contact = '', job_role = "", school = '', role = "1", school_admin } = payload
+    const { name, email, password = '', contact = '', job_role = "", school = '', role = "1", school_admin } = payload
 
-    let isExist = await User.findOne({ email })
+    let isExist = await User.findOne({ email, role: { $ne: '1' } })
 
     //check user is exist or not
     if (isExist && isExist?.isverified) {
@@ -89,7 +89,12 @@ const loginUser = async (payload: { email: string, password: string }) => {
     if (!user) {
         // If user not found, throw error
         throw new AppError(httpStatus.NOT_FOUND, 'Account not found');
-    } else {
+    }
+    else if (user?.role == '1') {
+        // If user not found, throw error
+        throw new AppError(httpStatus.NOT_FOUND, 'You can not sign in guest account');
+    }
+    else {
         if (!user?.status) {
             throw new AppError(httpStatus.FORBIDDEN, 'Your account is blocked');
         }

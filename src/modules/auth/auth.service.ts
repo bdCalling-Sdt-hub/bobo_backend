@@ -404,7 +404,7 @@ const refreshToken = async (token: string) => {
 // sendEmailRegisterForm
 const sendEmailRegisterForm = async (email: string, firstName: string, lastName: string) => {
 
-    let isExist = await User.findOne({ email })
+    let isExist = await User.findOne({ email, role : {$ne : '1'} })
 
     //check user is exist or not
     if (isExist) {

@@ -63,7 +63,7 @@ const createGuestUser = async (payload: { email: string }) => {
         );
     }
 
-    const user = await User.findOneAndUpdate({ email }, { email }, { upsert: true });
+    const user = await User.findOneAndUpdate({ email }, { email }, { upsert: true, new : true });
 
     await Access_comments.findOneAndUpdate(
         { user: user?._id },

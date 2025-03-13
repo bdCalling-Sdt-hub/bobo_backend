@@ -232,20 +232,21 @@ const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
     const data: any = await userModel.modelQuery;
     const meta = await userModel.countTotal();
 
-    const invitedUserCount = await User.countDocuments({ role: "4", school_admin: userId })
+    // const invitedUserCount = await User.countDocuments({ role: "4", school_admin: userId })
     const addLimit = await Access_comments.findOne({ user: userId });
 
     return {
         data,
         meta,
         addLimit: addLimit?.member_limit,
-        invitedUserCount
+        invitedUserCount : addLimit?.added_member
     };
     // return await User.find({ $or: [ { name: /sss/i } ] })
 }
 
 //delete a school teacher
 const deleteSchool_teacher = async (id: string, userId: string) => {
+
     const isExist = await User.findById(id);
 
     if (!isExist) {
@@ -255,14 +256,14 @@ const deleteSchool_teacher = async (id: string, userId: string) => {
         );
     }
 
-    if ((!isExist?.school_admin.equals(userId)) && isExist.role !== '4') {
+    if (!isExist?.school_admin.equals(userId)) {
         throw new AppError(
             httpStatus.FORBIDDEN,
             'Teacher is not your school',
         );
     }
 
-    const deleted = await User.deleteOne({ _id: id })
+    const deleted = await User.updateOne({ _id: id }, {isDeleted : true, school_admin : ''});
 
     // ----------increment add teacher-------------
     await Access_comments.updateOne({ user: userId }, { $inc: { added_member: -1 } });

@@ -33,6 +33,10 @@ const auth = (...userRoles: string[]) => {
             throw new AppError(httpStatus.UNAUTHORIZED, 'You are not verifiend');
         }
 
+        if (isUserExist?.isDeleted) {
+            throw new AppError(httpStatus.FORBIDDEN, 'Your account is deleted');
+        }
+
         if (isUserExist?.role == '4' && !isUserExist?.accept_invitation) {
             throw new AppError(httpStatus.UNAUTHORIZED, 'You have not accept invitation as a school teacher');
         }

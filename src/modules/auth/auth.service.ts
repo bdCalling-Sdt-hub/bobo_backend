@@ -21,17 +21,19 @@ const createUser = async (payload: IUser) => {
     let isExist = await User.findOne({ email, role: { $ne: '1' } })
 
     //check user is exist or not
-    if (isExist && isExist?.isverified) {
-        throw new AppError(
-            httpStatus.FORBIDDEN,
-            'User already exists with this email',
-        );
+    if (isExist) {
+        if (!isExist?.isDeleted && isExist?.isverified) {
+            throw new AppError(
+                httpStatus.FORBIDDEN,
+                'User already exists with this email',
+            );
+        }
     }
 
     // creat encrypted password
     const hashedPassword = await bcrypt.hash(password, 15);
 
-    const user = await User.findOneAndUpdate({ email }, { name, email, contact, password: hashedPassword, job_role, school, role, school_admin }, { upsert: true, new: true });
+    const user = await User.findOneAndUpdate({ email }, { name, email, contact, password: hashedPassword, job_role, school, role, school_admin, isDeleted: false }, { upsert: true, new: true });
 
     if (!user) {
         throw new AppError(httpStatus.BAD_REQUEST, 'User creation failed');
@@ -63,7 +65,7 @@ const createGuestUser = async (payload: { email: string }) => {
         );
     }
 
-    const user = await User.findOneAndUpdate({ email }, { email }, { upsert: true, new : true });
+    const user = await User.findOneAndUpdate({ email }, { email }, { upsert: true, new: true });
 
     await Access_comments.findOneAndUpdate(
         { user: user?._id },
@@ -99,6 +101,10 @@ const loginUser = async (payload: { email: string, password: string }) => {
             throw new AppError(httpStatus.FORBIDDEN, 'Your account is blocked');
         }
 
+        if (user?.isDeleted) {
+            throw new AppError(httpStatus.FORBIDDEN, 'Your account is deleted');
+        }
+
         if (user.role == '4' && !user?.accept_invitation) {
             throw new AppError(httpStatus.FORBIDDEN, 'You have not accept invitation');
         }
@@ -109,7 +115,6 @@ const loginUser = async (payload: { email: string, password: string }) => {
         if (!passwordMatched) {
             throw new AppError(httpStatus.BAD_REQUEST, 'Please check your credentials and try again');
         }
-
 
         if (!user?.isverified) {
             throw new AppError(httpStatus.BAD_REQUEST, 'Your account is not verified');
@@ -173,11 +178,6 @@ const adminLogin = async (payload: { email: string, password: string }) => {
         if (user.role == '6' && !user?.accept_invitation) {
             throw new AppError(httpStatus.FORBIDDEN, 'You have not accept sub admin invitation');
         }
-
-        if (user?.isDeleted) {
-            throw new AppError(httpStatus.FORBIDDEN, 'Admin not found');
-        }
-
 
         // Handle verify password
         const passwordMatched = await bcrypt.compare(payload?.password, user?.password);
@@ -404,7 +404,7 @@ const refreshToken = async (token: string) => {
 // sendEmailRegisterForm
 const sendEmailRegisterForm = async (email: string, firstName: string, lastName: string) => {
 
-    let isExist = await User.findOne({ email, role : {$ne : '1'} })
+    let isExist = await User.findOne({ email, role: { $ne: '1' } })
 
     //check user is exist or not
     if (isExist) {

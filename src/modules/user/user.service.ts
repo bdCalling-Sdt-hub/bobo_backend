@@ -224,7 +224,7 @@ const acceptSubadmin_Invitation = async (token: string) => {
 
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
-    const userModel = new QueryBuilder(User.find({ school_admin: userId, isDeleted : false }), query) //accept_invitation: true
+    const userModel = new QueryBuilder(User.find({ school_admin: userId, isDeleted: false }), query) //accept_invitation: true
         .search(['name', 'email', 'contact', 'school'])
         .filter()
         .paginate()
@@ -239,7 +239,7 @@ const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
         data,
         meta,
         addLimit: addLimit?.member_limit,
-        invitedUserCount : addLimit?.added_member
+        invitedUserCount: addLimit?.added_member
     };
     // return await User.find({ $or: [ { name: /sss/i } ] })
 }
@@ -256,14 +256,14 @@ const deleteSchool_teacher = async (id: string, userId: string) => {
         );
     }
 
-    if (!isExist?.school_admin.equals(userId)) {
+    if (isExist?.school_admin !== (userId)) {
         throw new AppError(
             httpStatus.FORBIDDEN,
             'Teacher is not your school',
         );
     }
 
-    const deleted = await User.updateOne({ _id: id }, {isDeleted : true, school_admin : 'xyz'});
+    const deleted = await User.updateOne({ _id: id }, { isDeleted: true, school_admin: '' });
 
     // ----------increment add teacher-------------
     await Access_comments.updateOne({ user: userId }, { $inc: { added_member: -1 } });
@@ -284,7 +284,7 @@ const updateSchoolTeacher = async (payload: { name: string, status: 0 | 1 }, id:
         );
     }
 
-    if (!isExist.school_admin.equals(userId)) {
+    if (isExist.school_admin !== (userId)) {
         throw new AppError(
             httpStatus.FORBIDDEN,
             'You are not his school admin',

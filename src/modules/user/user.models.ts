@@ -51,7 +51,7 @@ const userSchema: Schema<IUser> = new Schema(
       default: '1'
     },
     school_admin: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: String,
       ref: "users",
       validate: {
         validator: function (this: IUser, value: Types.ObjectId | undefined) {

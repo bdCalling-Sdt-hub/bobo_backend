@@ -12,7 +12,7 @@ export interface IUser {
   school?: string
   isverified: boolean
   role: "1" | "2" | "3" | "4" | "5" | '6'; //1 for guest user, 2 for individual teacher, 3 for school admin & 4 for school teacher & 5 for admin & 6 for sub admin
-  school_admin: Types.ObjectId //if user is school teacher, set school admin id,
+  school_admin: string //if user is school teacher, set school admin id,
   accept_invitation: boolean, // school teacher accept invitation
   verification: {
     otp: string | number;

@@ -102,7 +102,7 @@ const loginUser = async (payload: { email: string, password: string }) => {
         }
 
         if (user?.isDeleted) {
-            throw new AppError(httpStatus.FORBIDDEN, 'Your account is deleted');
+            throw new AppError(httpStatus.FORBIDDEN, 'Your account is removed from a school, you can register for a new account');
         }
 
         if (user.role == '4' && !user?.accept_invitation) {

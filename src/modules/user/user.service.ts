@@ -263,7 +263,7 @@ const deleteSchool_teacher = async (id: string, userId: string) => {
         );
     }
 
-    const deleted = await User.updateOne({ _id: id }, {isDeleted : true});
+    const deleted = await User.updateOne({ _id: id }, {isDeleted : true, school_admin : 'xyz'});
 
     // ----------increment add teacher-------------
     await Access_comments.updateOne({ user: userId }, { $inc: { added_member: -1 } });

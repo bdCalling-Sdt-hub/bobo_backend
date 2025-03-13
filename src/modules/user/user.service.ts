@@ -126,10 +126,19 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
         if (!user) {
             throw new AppError(httpStatus.BAD_REQUEST, 'Teacher creation failed');
         }
+    }
 
-        // ----------increment add teacher-------------
-        // await Access_comments.updateOne({ user: userId }, { $inc: { added_member: 1 } });
+    //add temporary password if user is a guest user
+    else if (user?.role == '1') {
 
+        tmp_password = randomPassword;
+
+        const hashedPassword = await bcrypt.hash(randomPassword, 15);
+
+        await User.updateOne({ email: payload.email }, { password: hashedPassword, school_admin: userId });
+    }
+    else {
+        await User.updateOne({ email: payload.email }, { school_admin: userId });
     }
 
     const EmailPath = path.join(

@@ -137,9 +137,6 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
 
         await User.updateOne({ email: payload.email }, { password: hashedPassword, school_admin: userId });
     }
-    else if(user?.school_admin){
-        throw new AppError(httpStatus.BAD_REQUEST, 'This teacher alraedy joined with a school');
-    }
     else {
         await User.updateOne({ email: payload.email }, { school_admin: userId });
     }

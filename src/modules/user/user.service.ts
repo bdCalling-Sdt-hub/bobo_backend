@@ -224,7 +224,7 @@ const acceptSubadmin_Invitation = async (token: string) => {
 
 //my school teachers
 const mySchoolTeachers = async (query: Record<string, any>, userId: string) => {
-    const userModel = new QueryBuilder(User.find({ role: "4", school_admin: userId }), query) //accept_invitation: true
+    const userModel = new QueryBuilder(User.find({ school_admin: userId }), query) //accept_invitation: true
         .search(['name', 'email', 'contact', 'school'])
         .filter()
         .paginate()

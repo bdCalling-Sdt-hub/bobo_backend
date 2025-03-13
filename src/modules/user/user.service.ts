@@ -137,6 +137,9 @@ const addTeacher = async (payload: { email: string, name: string, password: stri
 
         await User.updateOne({ email: payload.email }, { password: hashedPassword, school_admin: userId });
     }
+    else if(user?.school_admin){
+        throw new AppError(httpStatus.BAD_REQUEST, 'This teacher alraedy joined with a school');
+    }
     else {
         await User.updateOne({ email: payload.email }, { school_admin: userId });
     }
@@ -263,7 +266,7 @@ const deleteSchool_teacher = async (id: string, userId: string) => {
         );
     }
 
-    const deleted = await User.updateOne({ _id: id }, { isDeleted: true, school_admin: '' });
+    const deleted = await User.updateOne({ _id: id }, { isDeleted: true, school_admin: '', accept_invitation : false });
 
     // ----------increment add teacher-------------
     await Access_comments.updateOne({ user: userId }, { $inc: { added_member: -1 } });

@@ -68,7 +68,7 @@ const checkSchoolAdminHasPremiumProAccess = async (userId: string) => {
 
     if (!userAccess) {
         throw new AppError(
-            httpStatus.NOT_FOUND,
+            httpStatus.FORBIDDEN,
             'You have not access for use premium feature',
         );
     }

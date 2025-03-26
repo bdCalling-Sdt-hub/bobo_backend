@@ -60,18 +60,22 @@ const generate_comment = async (body: { feedbackData: any, language: string }, a
         //   `;
 
         // ----------------------------new feedback-------------------------
-        prompt = `Rédigez un commentaire détaillé pour le bulletin de l'élève en vous basant sur les données suivantes. Le commentaire doit être précis, informatif et ne pas dépasser 6 lignes. Adoptez le ton suivant : '${feedbackData?.toneOfVoice}'. 
+        prompt = `Rédigez un commentaire détaillé pour le bulletin de l'élève en vous basant sur les données suivantes. Le commentaire doit être à la fois fluides, précises, et positives, et ne pas dépasser 6 lignes. L'objectif est de rendre le texte plus facile à comprendre. Adoptez le ton suivant : '${feedbackData?.toneOfVoice
+            }'. 
+Un "true" indique que l'élève doit renforcer ses compétences dans ce domaine, tandis qu'un "false" signifie qu'il maîtrise bien cette compétence. 
 
-    Un "true" indique que l'élève doit renforcer ses compétences dans ce domaine, tandis qu'un "false" signifie qu'il maîtrise bien cette compétence.
-     Les compétences académiques et les comportements doivent être traités séparément. Ne mélangez pas les difficultés d’apprentissage avec des observations sur le comportement de l’élève. Par exemple, si un élève a des difficultés en mathématiques, précisez les compétences spécifiques à améliorer sans faire de lien direct avec son attitude ou comportement en classe.
-     Pour les matières fondamentales comme les mathématiques ou le français, soyez particulièrement précis lorsqu’un élève rencontre des difficultés. Par exemple, au lieu d’indiquer simplement qu’il a du mal en mathématiques, précisez s’il s’agit de la résolution de problèmes, de la compréhension des nombres ou de l’application des opérations. En revanche, pour les compétences bien maîtrisées, une formulation plus concise suffit, sans entrer dans un niveau de détail excessif.
-     Pour les autres disciplines, comme les sciences, l’histoire ou l’éducation artistique, un commentaire plus global peut suffire, en mettant en avant les aspects généraux des compétences acquises ou en développement, sans nécessairement détailler chaque point spécifique.
-     
-     Évitez de commencer ou de conclure le commentaire par des phrases génériques.
-     Améliorations nécessaires : ${improvementComments || "Aucune amélioration nécessaire"} Autres commentaires : ${JSON.stringify(others)
+Un "false" dans les points à améliorer signifie qu'il y a un besoin de faire des progrès dans ce domaine. En revanche, un "false" dans les domaines d'apprentissage indique qu'une compétence est déjà maîtrisée. Il est important de ne pas confondre les deux.
+
+Il est essentiel d’ajouter des transitions naturelles et logiques entre les phrases pour garantir une lecture fluide et cohérente.
+Les compétences académiques et les comportements doivent être traités séparément. Ne mélangez pas les difficultés d’apprentissage avec des observations sur le comportement de l’élève. Par exemple, si un élève a des difficultés en mathématiques, précisez les compétences spécifiques à améliorer sans faire de lien direct avec son attitude ou comportement en classe.
+Pour les matières fondamentales comme les mathématiques ou le français, soyez particulièrement précis lorsqu’un élève rencontre des difficultés. Par exemple, au lieu d’indiquer simplement qu’il a du mal en mathématiques, précisez s’il s’agit de la résolution de problèmes, de la compréhension des nombres ou de l’application des opérations. En revanche, pour les compétences bien maîtrisées, une formulation plus concise suffit, sans entrer dans un niveau de détail excessif.
+Pour les autres disciplines, comme les sciences, l’histoire ou l’éducation artistique, un commentaire plus global peut suffire, en mettant en avant les aspects généraux des compétences acquises ou en développement, sans nécessairement détailler chaque point spécifique.
+
+
+Améliorations nécessaires : ${improvementComments || "Aucune amélioration nécessaire"} Autres commentaires : ${JSON.stringify(others)
             }
-      Commentaires : ${JSON.stringify(feedbackData)} 
-     Exemple de commentaire : "Micheal a montré des progrès notables dans plusieurs domaines; ${pronoun} vocabulaire en langue parlée s'élargit et ${pronoun} commence à former des phrases simples. ${pronoun} lit des syllabes et des mots, fait des calculs, ${possessive} écriture s'améliore également et ${pronoun} écrit plus vite. Cependant, Micheal doit encore apprendre à être plus responsable et respecter les règles. Cette attitude l'aidera à améliorer ${possessive} résultats. Ses réussites sont encore fragiles mais progressent cette année. Il faut continuer à fournir des efforts. Les sessions de soutien en langue française l'aideront à consolider ses bases linguistiques.`
+ Commentaires : ${JSON.stringify(feedbackData)} 
+Exemple de commentaire : "Micheal a montré des progrès notables dans plusieurs domaines; ${pronoun} vocabulaire en langue parlée s'élargit et ${pronoun} commence à former des phrases simples. ${pronoun} lit des syllabes et des mots, fait des calculs, ${possessive} écriture s'améliore également et ${pronoun} écrit plus vite. Cependant, Micheal doit encore apprendre à être plus responsable et respecter les règles. Cette attitude l'aidera à améliorer ${possessive} résultats. Ses réussites sont encore fragiles mais progressent cette année. Il faut continuer à fournir des efforts. Les sessions de soutien en langue française l'aideront à consolider ses bases linguistiques.`
 
 
     } else {
@@ -99,9 +103,13 @@ const generate_comment = async (body: { feedbackData: any, language: string }, a
 
 
         // ----------------------------new feedback-------------------------
-        prompt = `Write a detailed comment for the student's report card based on the following data. The comment should be precise, informative, and not exceed 6 lines. Use the following tone: '${feedbackData?.toneOfVoice}'.
+        prompt = `Write a detailed comment for the student's report card based on the following data. The comment should be fluid, precise, and positive, and should not exceed 6 lines. The goal is to make the text easier to understand. Use the following tone: '${feedbackData?.toneOfVoice}'.
 A "true" indicates that the student needs to strengthen their skills in this area, while a "false" means they have mastered the skill. Do not begin or end the comment with generic sentences.
-Academic skills and behaviors should be addressed separately. Do not mix learning diffiulties with observations about the student's behavior. For example, if a student struggles in mathematics, specify the exact skills that need improvement without directly linking them to their attitude or behavior in class.
+
+A "false" in the areas for improvement means that there is a need for progress in this area. However, a "false" in the learning areas indicates that the student has already mastered the skill. It is important not to confuse the two.
+
+It is essential to add natural and logical transitions between sentences to ensure smooth and coherent reading.
+Academic skills and behaviors should be addressed separately. Do not mix learning difficulties with observations about the student's behavior. For example, if a student struggles in mathematics, specify the exact skills that need improvement without directly linking them to their attitude or behavior in class.
 For fundamental subjects like mathematics or French, it is important to specify the exact skills that need improvement rather than detailing those the student has already mastered. For example, instead of simply stating that the student struggles in mathematics, specify whether the difficulty lies in problem-solving, number comprehension, or applying operations. Similarly, in French, indicate whether progress is needed in fluent reading, text comprehension, or sentence construction. This level of precision helps better target areas for improvement and adapt the necessary support.
 Do not begin or end the comment with generic sentences.
 For other subjects, such as science, history, or artistic education, a more general comment may be sufficient, highlighting the overall aspects of the skills acquired or in development without necessarily detailing each specific point.
@@ -110,8 +118,7 @@ Improvements needed in the following areas: ${improvementComments || "No improve
 Other feedback: ${JSON.stringify(others)}
 Feedback: ${JSON.stringify(feedbackData)} 
 Example comment: 
-"Micheal has made significant progress in several areas; ${pronoun} vocabulary is expanding in spoken language and ${pronoun} is starting to form simple sentences. ${pronoun} reads syllables and words, performs calculations, ${possessive} handwriting is improving, and ${pronoun} writes faster. However, Micheal still needs to develop a more responsible attitude and respect the rules. This behavior will help ${pronoun} improve ${possessive} results. ${pronoun} achievements are still fragile but progressing this semester. Continued efforts are needed. French language support sessions will help Micheal strengthen ${possessive} linguistic foundations." 
-`
+"Micheal has made significant progress in several areas; ${pronoun} vocabulary is expanding in spoken language and ${pronoun} is starting to form simple sentences. ${pronoun} reads syllables and words, performs calculations, ${possessive} handwriting is improving, and ${pronoun} writes faster. However, Micheal still needs to develop a more responsible attitude and respect the rules. This behavior will help ${pronoun} improve ${possessive} results. ${pronoun} achievements are still fragile but progressing this semester. Continued efforts are needed. French language support sessions will help Micheal strengthen ${possessive} linguistic foundations." `
 
 
     }

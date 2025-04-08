@@ -17,11 +17,11 @@ const app: Express = express();
 multer();
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(cors({
-  origin: [config.client_Root_Url!, 'http://192.168.10.133:5004', "http://teachercommentshub.com", "https://teachercommentshub.com", 'https://dashboard.teachercommentshub.com', 'http://dashboard.teachercommentshub.com'],
+  origin: [config.client_Root_Url!, 'http://192.168.10.213:5004', "http://teachercommentshub.com", "https://teachercommentshub.com", 'https://dashboard.teachercommentshub.com', 'http://dashboard.teachercommentshub.com'],
   credentials: true
 }));
 app.use(express.json());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(express.static('public'));
 
 const port = config.port || 3000;

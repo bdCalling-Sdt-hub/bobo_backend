@@ -130,7 +130,9 @@ const resendOtp = async (email: string) => {
       fs
         .readFileSync(otpEmailPath, 'utf8')
         .replace('{{otp}}', otp)
-        .replace('{{email}}', user?.email),
+        .replace('{{email}}', user?.email)
+        .replace('{{otp1}}', otp)
+        .replace('{{email1}}', user?.email)
     );
   }
 

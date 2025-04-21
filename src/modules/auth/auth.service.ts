@@ -70,7 +70,7 @@ const createGuestUser = async (payload: { email: string }) => {
     await Access_comments.findOneAndUpdate(
         { user: user?._id },
         {
-            $set: { [`plans.free.expiredAt`]: null, [`plans.free.comment_generated`]: 0, [`plans.free.comment_generate_limit`]: 5, [`plans.free.accessCycle`]: 'all', user: user?._id },
+            $set: { [`plans.free.expiredAt`]: null, [`plans.free.comment_generated`]: 0, [`plans.free.comment_generate_limit`]: 10, [`plans.free.accessCycle`]: 'all', user: user?._id },
         },
         { upsert: true },
     );

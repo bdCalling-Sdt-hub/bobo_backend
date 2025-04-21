@@ -88,6 +88,7 @@ const checkout = async (payload: IPayment, userId: string) => {
       name: subscription?.package?.shortTitle,
       quantity: 1,
     },
+    
 
     //@ts-ignore
     paymentId: paymentData?._id,

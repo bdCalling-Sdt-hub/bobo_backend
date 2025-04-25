@@ -150,22 +150,22 @@ const countData = async () => {
     return { totalEarnings: totalEarnings.toFixed(2), totalUsers: totalUsers.toFixed(2) }
 }
 
-const clearDb = async()=>{
-    const deletedPayments = await Payment.deleteMany({});
-    const subscription = await Subscription.deleteMany({});
-    const users = await User.deleteMany({ role: { $ne: "5" } });
-    const comments = await Comments.deleteMany({});
+// const clearDb = async()=>{
+//     const deletedPayments = await Payment.deleteMany({});
+//     const subscription = await Subscription.deleteMany({});
+//     const users = await User.deleteMany({ role: { $ne: "5" } });
+//     const comments = await Comments.deleteMany({});
 
-    const updatedAdminmail = await User.updateOne({ role: "5" }, {email :"support@teachercommentshub.com"});
+//     const updatedAdminmail = await User.updateOne({ role: "5" }, {email :"support@teachercommentshub.com"});
 
-    return "data cleared done"
+//     return "data cleared done"
 
-}
+// }
 
 export const dashboardService = {
     userChart,
     earningChart,
     countData,
 
-    clearDb
+    // clearDb
 }

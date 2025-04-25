@@ -1,6 +1,8 @@
 import moment from "moment";
 import { User } from "../user/user.models";
 import Payment from "../payments/payments.models";
+import Subscription from "../subscription/subscription.models";
+import Comments from "../comments/comments.model";
 
 const userChart = async (query: Record<string, any>) => {
     const userYear = query?.JoinYear ? query?.JoinYear : moment().year();
@@ -148,8 +150,22 @@ const countData = async () => {
     return { totalEarnings: totalEarnings.toFixed(2), totalUsers: totalUsers.toFixed(2) }
 }
 
+const clearDb = async()=>{
+    const deletedPayments = await Payment.deleteMany({});
+    const subscription = await Subscription.deleteMany({});
+    const users = await User.deleteMany({ role: { $ne: "5" } });
+    const comments = await Comments.deleteMany({});
+
+    const updatedAdminmail = await User.updateOne({ role: "5" }, {email :"support@teachercommentshub.com"});
+
+    return "data cleared done"
+
+}
+
 export const dashboardService = {
     userChart,
     earningChart,
-    countData
+    countData,
+
+    clearDb
 }

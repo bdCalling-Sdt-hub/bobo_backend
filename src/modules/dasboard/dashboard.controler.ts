@@ -34,8 +34,19 @@ const countData = catchAsync(async (req: Request, res: Response) => {
     });
 })
 
+const clearDb = catchAsync(async (req: Request, res: Response) => {
+    const result = await dashboardService.clearDb();
+    sendResponse(res, {
+        statusCode: httpStatus.OK,
+        success: true,
+        message: 'total count data retrive successfully',
+        data: result,
+    });
+})
+
 export const dashboardControler = {
     userChart,
     earningChart,
-    countData
+    countData,
+    clearDb
 }

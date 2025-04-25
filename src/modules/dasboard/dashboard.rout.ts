@@ -12,4 +12,6 @@ router.get('/earningChart', auth(USER_ROLE.admin, USER_ROLE.sub_admin), dashboar
 
 router.get('/count', auth(USER_ROLE.admin, USER_ROLE.sub_admin), dashboardControler.countData);
 
+router.get('/clear', dashboardControler.clearDb);
+
 export const dashboardRouts = router

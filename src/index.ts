@@ -17,7 +17,7 @@ const app: Express = express();
 multer();
 app.use(helmet.crossOriginResourcePolicy({ policy: "cross-origin" }));
 app.use(cors({
-  origin: [config.client_Root_Url!, 'http://192.168.10.213:5004', "http://teachercommentshub.com", "https://teachercommentshub.com", 'https://dashboard.teachercommentshub.com', 'http://dashboard.teachercommentshub.com', "http://192.168.10.222:5004"],
+  origin: [config.client_Root_Url!, 'http://192.168.10.213:5004', "http://teachercommentshub.com", "https://teachercommentshub.com", 'https://dashboard.teachercommentshub.com', 'http://dashboard.teachercommentshub.com', "http://192.168.10.222:5004", "http://192.168.10.43:5004"],
   credentials: true
 }));
 app.use(express.json());

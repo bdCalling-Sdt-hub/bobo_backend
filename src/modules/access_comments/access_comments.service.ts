@@ -75,7 +75,7 @@ Pour les autres disciplines, comme les sciences, l’histoire ou l’éducation 
 Améliorations nécessaires : ${improvementComments || "Aucune amélioration nécessaire"} Autres commentaires : ${JSON.stringify(others)
             }
  Commentaires : ${JSON.stringify(feedbackData)} 
-Exemple de commentaire : "Micheal a montré des progrès notables dans plusieurs domaines; ${pronoun} vocabulaire en langue parlée s'élargit et ${pronoun} commence à former des phrases simples. ${pronoun} lit des syllabes et des mots, fait des calculs, ${possessive} écriture s'améliore également et ${pronoun} écrit plus vite. Cependant, Micheal doit encore apprendre à être plus responsable et respecter les règles. Cette attitude l'aidera à améliorer ${possessive} résultats. Ses réussites sont encore fragiles mais progressent cette année. Il faut continuer à fournir des efforts. Les sessions de soutien en langue française l'aideront à consolider ses bases linguistiques.
+Exemple de commentaire : "Michael a fait des progrès significatifs dans plusieurs domaines ; ${possessive} vocabulaire s’enrichit dans la langue parlée et ${pronoun} commence à formuler des phrases simples. ${pronoun} lit des syllabes et des mots, effectue des calculs, ${possessive} écriture s'améliore, et ${pronoun} écrit plus rapidement. Cependant, Michael doit encore développer une attitude plus responsable et respecter les règles. Ce comportement aidera ${pronoun} à améliorer ${possessive} résultats. Les progrès de ${pronoun} sont encore fragiles mais en évolution ce semestre. Des efforts continus sont nécessaires. Des séances de soutien en langue française aideront Michael à renforcer ${possessive} bases linguistiques."
 `
 
 
@@ -119,7 +119,7 @@ Improvements needed in the following areas: ${improvementComments || "No improve
 Other feedback: ${JSON.stringify(others)}
 Feedback: ${JSON.stringify(feedbackData)} 
 Example comment: 
-"Micheal has made significant progress in several areas; ${pronoun} vocabulary is expanding in spoken language and ${pronoun} is starting to form simple sentences. ${pronoun} reads syllables and words, performs calculations, ${possessive} handwriting is improving, and ${pronoun} writes faster. However, Micheal still needs to develop a more responsible attitude and respect the rules. This behavior will help ${pronoun} improve ${possessive} results. ${pronoun} achievements are still fragile but progressing this semester. Continued efforts are needed. French language support sessions will help Micheal strengthen ${possessive} linguistic foundations."`
+"Michael has made significant progress in several areas; ${pronoun} vocabulary is expanding in spoken language and ${pronoun} is starting to form simple sentences. ${pronoun} reads syllables and words, performs calculations, ${possessive} handwriting is improving, and ${pronoun} writes faster. However, Micheal still needs to develop a more responsible attitude and respect the rules. This behavior will help ${pronoun} improve ${possessive} results. ${pronoun} achievements are still fragile but progressing this semester. Continued efforts are needed. French language support sessions will help Micheal strengthen ${possessive} linguistic foundations."`
 
     }
 

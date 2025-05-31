@@ -29,6 +29,8 @@ export const createCheckoutSession = async (payload: IPayload) => {
       },
     ],
 
+     automatic_tax: { enabled: true },
+
     success_url: `${config.server_url}/payments/confirm-payment?sessionId={CHECKOUT_SESSION_ID}&paymentId=${payload?.paymentId}`,
 
     cancel_url: `${config?.client_Url}${config?.cancel_url}`,
@@ -43,6 +45,7 @@ export const createCheckoutSession = async (payload: IPayload) => {
     invoice_creation: {
       enabled: true,
     },
+   
     // customer: payload?.customerId,
     // payment_intent_data: {
     //   metadata: {

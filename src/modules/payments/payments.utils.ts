@@ -22,6 +22,7 @@ export const createCheckoutSession = async (payload: IPayload) => {
           currency: 'eur',
           product_data: {
             name: payload?.product?.name,
+            tax_code : "txcd_10203000"
           },
           unit_amount: Math.round(payload.product?.amount * 100),
         },
@@ -29,7 +30,7 @@ export const createCheckoutSession = async (payload: IPayload) => {
       },
     ],
 
-     automatic_tax: { enabled: true },
+    //  automatic_tax: { enabled: true },
 
     success_url: `${config.server_url}/payments/confirm-payment?sessionId={CHECKOUT_SESSION_ID}&paymentId=${payload?.paymentId}`,
 

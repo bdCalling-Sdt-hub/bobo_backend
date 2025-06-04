@@ -50,7 +50,6 @@ router.patch(
     userController.update_user_status,
 );
 
-
 router.patch(
     '/update-my-profile',
     auth(USER_ROLE.individual_teacher, USER_ROLE.school_admin, USER_ROLE.school_teacher, USER_ROLE.admin, USER_ROLE.sub_admin),

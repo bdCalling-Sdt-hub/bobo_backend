@@ -30,7 +30,7 @@ export const createCheckoutSession = async (payload: IPayload) => {
       },
     ],
 
-    //  automatic_tax: { enabled: true },
+     automatic_tax: { enabled: true },
 
     success_url: `${config.server_url}/payments/confirm-payment?sessionId={CHECKOUT_SESSION_ID}&paymentId=${payload?.paymentId}`,
 
